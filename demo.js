@@ -87,8 +87,11 @@ function preberiEHRodBolnika() {
 		});
 	}	
 }
-
-
+function bolnik(){
+	sessionID = getSessionID();
+	
+	
+}
 function dodajMeritveVitalnihZnakov() {
 	sessionId = getSessionId();
 
@@ -143,7 +146,25 @@ function dodajMeritveVitalnihZnakov() {
 		});
 	}
 }
-
+function redirectToUrl(){
+	sessionId = getSessionId();	
+	var ehrId = $("#preberiEHRid").val();
+	
+	console.log(ehrId);
+	$.ajax({
+		url: baseUrl + "/demographics/ehr/" + ehrId + "/party",
+	    	type: 'GET',
+	    	headers: {"Ehr-Session": sessionId},
+	    	success: function (data) {
+				var party = data.party;
+				
+				$("#ImePacienta").html("<div>ime pacienta: "+party.firstNames+"</div>");
+				
+							
+	    	}	
+	    	});
+	document.location.href = '/main.html';
+}
 
 function preberiMeritveVitalnihZnakov() {
 	sessionId = getSessionId();	
