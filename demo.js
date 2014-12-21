@@ -19,6 +19,9 @@ function generator(){
 	sessionID = getSessionId();
 	window.location= "/ois-dn4/poizvedva.html";
 }
+function nazaj(){
+	window.location= "/ois-dn4";
+}
 function kreirajEHRzaBolnika() {
 	sessionId = getSessionId();
 
