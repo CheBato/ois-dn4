@@ -17,7 +17,7 @@ function getSessionId() {
 
 function generator(){
 	sessionID = getSessionId();
-	window.location = "/index.html";
+	window.location= "ois-dn4/index.html";
 }
 function kreirajEHRzaBolnika() {
 	sessionId = getSessionId();
