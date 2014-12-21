@@ -7,12 +7,12 @@
 	    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
 	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	    <script src="demo.js"></script>
-	    <script src="main.html"></script>
 	    <script src="index.html"></script>
 	    <style>
 	  		body {padding: 10px;}
 	  		.btn {margin-top: 10px;}
 	  		.obvestilo {margin-left:10px;}
+	  		.bgcolor {color: RED;}
 	  	</style>
 	</head>
 	<body>
@@ -28,12 +28,35 @@
 					</div>
 					<div class="panel-body">
 						<span class="label label-default">EHR ID</span><input id="preberiEHRid" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885">
-						<button type="button" class="btn btn-primary btn-xs" onclick="preberiEHRodBolnika()">Preberi osnovne podatke o bolniku</button><span id="preberiSporocilo"></span>
-						<button type="button" class="btn btn-primary btn-xs" onclick="redirectToUrl()">Poisci podatke o pacientu</button>
+						<button type="button" class="btn btn-primary btn-xs" onclick="ime()">Poisci podatke o pacientu</button><span id="preberiSporocilo"></span><span><button type="button" class="btn btn-primary btn-xs" onclick="ime()"></span>
+						<button type="button" class="btn btn-primary btn-xs" onclick="generator()">Generator pacientov</button>
 				  	</div>
 					
 						
 				</div>
-			</div>
-	    
+				
+	    		<div id="test"></div>	
+	    	</div>	
+	    			<div class="row">
+	    				
+	    				<div class="col-lg-4 col-md-4 col-sm-4">
+	    					<div class="panel panel-default">
+	    						<div class="panel-heading">
+	    							<div class="row">
+	    								<div class="col-lg-2 col-md-2 col-sm-2"></div><b>Simptomi</b> | <b>Priporoceni zdravniki</b>
+	    							</div>
+	    						</div>
+	    					</div>
+	    				</div>
+	    				
+	    			</div>
+	    		</div>
+	    		
+	    	
+	   
+	    		
+	    				
+	    			
+	    			
+	    	
 	</body>
