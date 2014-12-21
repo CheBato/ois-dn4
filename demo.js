@@ -83,7 +83,11 @@ function dodajMeritveVitalnihZnakov() {
 	var diastolicniKrvniTlak = $("#dodajVitalnoKrvniTlakDiastolicni").val();
 	var nasicenostKrviSKisikom = $("#dodajVitalnoNasicenostKrviSKisikom").val();
 	var merilec = $("#dodajVitalnoMerilec").val();
-
+	var sub = $("#substanca").val();
+	var koment = $("#komentar").val();
+	var stopnja = $("#stopnja").val();
+	var obolel = $("#obolelost").val();
+	
 	if (!ehrId || ehrId.trim().length == 0) {
 		$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite pravilne podatke</span>");
 	} else {
@@ -102,6 +106,16 @@ function dodajMeritveVitalnihZnakov() {
 		    "vital_signs/blood_pressure/any_event/systolic": sistolicniKrvniTlak,
 		    "vital_signs/blood_pressure/any_event/diastolic": diastolicniKrvniTlak,
 		    "vital_signs/indirect_oximetry:0/spo2|numerator": nasicenostKrviSKisikom
+		    
+		};
+		var podatki2 = {
+			"ctx/language": "en",
+		    "ctx/territory": "SI",
+		    "allergies/any_event/substance_agent": sub,
+		    "allergies/any_event/comment": koment,
+		    "allergies/any_event/clinical_impact": stopnja,
+		    "allergies/any_event/certainty": obolel,
+			
 		};
 		var parametriZahteve = {
 		    "ehrId": ehrId,
@@ -109,6 +123,12 @@ function dodajMeritveVitalnihZnakov() {
 		    format: 'FLAT',
 		    committer: merilec
 		};
+		var parametriZahteve2 = {
+			"ehrId":ehrId,
+			templateId: 'Allergies',
+			format: 'FLAT',
+			
+		}
 		$.ajax({
 		    url: baseUrl + "/composition?" + $.param(parametriZahteve),
 		    type: 'POST',
@@ -123,6 +143,20 @@ function dodajMeritveVitalnihZnakov() {
 				console.log(JSON.parse(err.responseText).userMessage);
 		    }
 		});
+		$.ajax({
+			url: baseUrl + "/composition?" + $.param(parametriZahteve2),
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(podatki2),
+			success: function (res) {
+				console.log(res.meta.href);
+				$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-success fade-in'>" + res.meta.href + ".</span>");
+			},
+			error: function(err) {
+				$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
+				console.log(JSON.parse(err.responseText).userMessage);
+			}
+		});
 	}
 }
 function ime(){
@@ -132,7 +166,7 @@ function ime(){
 		$("#test").html("");
 		$("#preberiSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
 	}else{
-	$("#test").html("<div class='row'><div class='col-lg-9 col-md-9 col-sm-9'><div class='panel panel-default'><div class='panel-heading'><div class='row'><div class='col-lg-8 col-md-8 col-sm-8' id='Pacient'></div><div class='col-lg-9 col-md-9 col-sm-9' id='rojstvo'></div><div class='col-lg-8 col-md-8 col-sm-8' id='Gender'></div><div class='col-lg-8 col-md-8 col-sm-8'><select class='form-control input-sm' id='preberiTipZaVitalneZnake'><option value='telesna temperatura'>telesna temperatura</option><option value='telesna teža'>telesna teža</option></select></div></div></div>"+
+	$("#test").html("<div class='row'><div class='col-lg-9 col-md-9 col-sm-9'><div class='panel panel-default'><div class='panel-heading'><div class='row'><div class='col-lg-8 col-md-8 col-sm-8' id='Pacient'></div><div class='col-lg-9 col-md-9 col-sm-9' id='rojstvo'></div><div class='col-lg-8 col-md-8 col-sm-8' id='Gender'></div><div class='col-lg-8 col-md-8 col-sm-8'><select class='form-control input-sm' id='preberiTipZaVitalneZnake'><option value='telesna temperatura'>telesna temperatura</option><option value='telesna teža'>telesna teža</option><option value='alergije'>Alergije</option></select></div></div></div>"+
 	    					"<div class='panel-body'>"+
 	    						"<button type='button' class='btn btn-primary btn-xs' onclick='preberiMeritve()'>Preberi meritve vitalnih znakov</button><span id='preberiMeritveVZ'></span>"+
 	    						"<div id='rMeritveVZ'></div>"+
@@ -183,7 +217,7 @@ function preberiMeritve() {
 					    	if (res.length > 0) {
 						    	var results = "<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>Telesna temperatura</th></tr>";
 						        for (var i in res) {
-						        	if(res[i].temperature < 37.2){
+						        	if(res[i].temperature < 37){
 						        		results += "<tr><td>" + res[i].time + "</td><td class='text-right'>" + res[i].temperature + " " 	+ res[i].unit + " Podhladitev " + "</td>";
 						        	}else{
 						            	results += "<tr><td>" + res[i].time + "</td><td class='text-right'>" + res[i].temperature + " " 	+ res[i].unit + "</td>";
@@ -221,7 +255,8 @@ function preberiMeritve() {
 					    	$("#preberiMeritveVZ").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
 							console.log(JSON.parse(err.responseText).userMessage);
 					    }
-					});					
+					});		
+					
 			/*	} else if (tip == "telesna temperatura AQL") {
 					var AQL = 
 						"select " +
@@ -257,6 +292,59 @@ function preberiMeritve() {
 					    }
 					});
 				}*/
+				}else if (tip == "alergije") {
+					$.ajax({
+					url: baseUrl +"/view/" + ehrId + "/substance_agent",
+					type: "GET",
+					 headers: {"Ehr-Session": sessionId},
+					    success: function (res) {
+					    	$("#rMeritveVZ").html("<div>Substanca: "+res.substance_agent+"</div>");
+					    },
+					    error: function(){
+					    	$("#preberiMeritveVZ").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
+							console.log(JSON.parse(err.responseText).userMessage);
+					    
+					    }
+					});
+					$.ajax({
+					url: baseUrl +"/view/" + ehrId + "/comment",
+					type: "GET",
+					 headers: {"Ehr-Session": sessionId},
+					    success: function (res) {
+					    	$("#rMeritveVZ").html("<div>comment: "+res.comment+"</div>");
+					    },
+					    error: function(){
+					    	$("#preberiMeritveVZ").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
+							console.log(JSON.parse(err.responseText).userMessage);
+					    
+					    }
+					});
+					$.ajax({
+					url: baseUrl +"/view/" + ehrId + "/clinical_impact",
+					type: "GET",
+					 headers: {"Ehr-Session": sessionId},
+					    success: function (res) {
+					    	$("#rMeritveVZ").html("<div>Stopnja: "+res.clinical_impact+"</div>");
+					    },
+					    error: function(){
+					    	$("#preberiMeritveVZ").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
+							console.log(JSON.parse(err.responseText).userMessage);
+					    
+					    }
+					});
+					$.ajax({
+					url: baseUrl +"/view/" + ehrId + "/certainty",
+					type: "GET",
+					 headers: {"Ehr-Session": sessionId},
+					    success: function (res) {
+					    	$("#rMeritveVZ").html("<div>Verjetnost obolelosti: "+res.certainty+"</div>");
+					    },
+					    error: function(){
+					    	$("#preberiMeritveVZ").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
+							console.log(JSON.parse(err.responseText).userMessage);
+					    
+					    }
+					});
 				}
 	    	},
 	    	error: function(err) {
@@ -292,6 +380,10 @@ $(document).ready(function() {
 		$("#dodajVitalnoKrvniTlakDiastolicni").val(podatki[6]);
 		$("#dodajVitalnoNasicenostKrviSKisikom").val(podatki[7]);
 		$("#dodajVitalnoMerilec").val(podatki[8]);
+		$("#substanca").val(podatki[9]);
+		$("#komentar").val(podatki[10]);
+		$("#stopnja").val(podatki[11]);
+		$("#obolelost").val(podatki[12]);
 	});
 	$('#preberiEhrIdZaVitalneZnake').change(function() {
 		$("#preberiMeritveVZ").html("");
