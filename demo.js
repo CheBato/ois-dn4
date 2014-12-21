@@ -183,7 +183,11 @@ function preberiMeritve() {
 					    	if (res.length > 0) {
 						    	var results = "<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>Telesna temperatura</th></tr>";
 						        for (var i in res) {
+						        	if(res[i].temperature > 37.2){
+						        		results += "<tr><td>" + res[i].time + "</td><td class='text-right'>" + res[i].temperature + " " 	+ res[i].unit + " Vrocina " + "</td>";
+						        	}else{
 						            results += "<tr><td>" + res[i].time + "</td><td class='text-right'>" + res[i].temperature + " " 	+ res[i].unit + "</td>";
+						        	}
 						        }
 						        results += "</table>";
 						        $("#rMeritveVZ").append(results);
@@ -290,8 +294,8 @@ $(document).ready(function() {
 		$("#dodajVitalnoMerilec").val(podatki[8]);
 	});
 	$('#preberiEhrIdZaVitalneZnake').change(function() {
-		$("#preberiMeritveVitalnihZnakovSporocilo").html("");
-		$("#rezultatMeritveVitalnihZnakov").html("");
+		$("#preberiMeritveVZ").html("");
+		$("#rMeritveVZ").html("");
 		$("#meritveVitalnihZnakovEHRid").val($(this).val());
 	});
 });
